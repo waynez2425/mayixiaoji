@@ -1,0 +1,13 @@
+Library
+Temp
+.idea
+Assembly-CSharp.csproj
+Assembly-CSharp-Editor.csproj
+AutoInstaller.Editor.csproj
+Piglet.csproj
+PigletEditor.csproj
+test111.sln
+obj
+Packages
+UserSettings
+.vsconfig
