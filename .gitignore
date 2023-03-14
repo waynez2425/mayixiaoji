@@ -12,3 +12,4 @@ Packages
 UserSettings
 .vsconfig
 Logs
+*.sln

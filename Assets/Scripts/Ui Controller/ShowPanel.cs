@@ -19,11 +19,13 @@ public class ShowPanel : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        //
         //InterShowPanelButton.GetComponent<Button>().onClick.AddListener(InterShowPanel);
         //QuitShowPanelButton.GetComponent<Button>().onClick.AddListener(QuitShowPanel);
     }
     public void InterShowPanel()
     {
+        PlayerPrefs.DeleteKey("eggnumber");
         PlayerPrefs.SetInt("DontRotationCamera",1 );
         thisanimator.SetBool("InterPanel", true);
         //PlayerPrefs.DeleteKey("DontRotationCamera");

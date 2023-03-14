@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class PlayerInput : MonoBehaviour
 {
-    public Joystick joystick;
+    public Joystick joystick;//遥感代码
     public float Jup;
     public float Jright;
     public float UorD;//判断输入的是前进还是后退
@@ -12,12 +12,10 @@ public class PlayerInput : MonoBehaviour
     public float Dup;//前进数值的缓慢增长值，使得从静态到动态的转换不会显得过于唐突。
     public float Dright;//向右移动的数值的缓慢增长值，使得从静态到动态的转换不会显得过于唐突。
     public Vector3 Dvec;//角色移动的方向值
-    public float VeloctiyUp;
+    public float VeloctiyUp;//纵轴变化暂存量
     public float VeloctiyRight;
     public float ForR;//判断输入的方向是向前还是向右，还是斜向方向
-
-
-    public PlayerActorConroller pac;
+    public PlayerActorConroller pac;//人物动画控制代码
 
     // Start is called before the first frame update
     void Start()

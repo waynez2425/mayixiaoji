@@ -12,18 +12,18 @@ public class PlayerActorConroller : MonoBehaviour
     public GameObject model;//获取玩家模型
     public GameObject CameraHandle;
     //public GameObject RoomControllerPanel;//灯光效果
-    public NavMeshAgent agent;
+    public NavMeshAgent agent;//玩家身上的寻路组件
 
-    public GameObject GetEggPanel;
+    public GameObject GetEggPanel;//获取鸡蛋的面板
 
     private Vector3 movingVec;//定义移动速度
-    public Rigidbody rigid;
+    public Rigidbody rigid;//玩家身上的刚体组件
 
     public float walkSpeed = 0.02f;//走路速度定义
     public float runMultiplier = 2.0f;//跑步速度定义
 
-    public Vector3 point;
-    private bool isNextMove = false;
+    public Vector3 point;//鼠标点击的位置
+    private bool isNextMove = false;//是否移动到下一个点位的开关
     private bool isGetEggPanel;
 
 
@@ -31,12 +31,13 @@ public class PlayerActorConroller : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-
+        
     }
 
     // Update is called once per frame
     void Update()
     {
+        //Debug.Log(PlayerPrefs.GetInt("eggnumber"));
         
         ////为了使走路动画到跑步动画之间的切换不那么突兀使用lerp函数取走路值和跑步值值的百分之50作为动画切换数值的增长值
         animator.SetFloat("Forward", pi.ForR * Mathf.Lerp(animator.GetFloat("Forward"), /*((pi.run) ? 2.0f :*/ 2.0f, 0.5f));
@@ -69,7 +70,7 @@ public class PlayerActorConroller : MonoBehaviour
         //{
         //    animator.SetBool("IsDance", false);
         //}
-        if (Input.GetMouseButtonDown(0) && PlayerPrefs.HasKey("layegg"))
+        if (Input.GetMouseButtonDown(0) && /*PlayerPrefs.HasKey("layegg")*/PlayerPrefs.GetInt("eggnumber")>0)
         {
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
@@ -77,13 +78,23 @@ public class PlayerActorConroller : MonoBehaviour
             {
                 if (hit.collider.gameObject.tag == "Plane")
                 {
-                    //Debug.Log(111111);
+                    //Debug.Log(22222);
+                    //Debug.DrawLine(ray.origin, hit.point, Color.black,10f);
+                    //Debug.Log(hit.point);
                     //agent.SetDestination(hit.point);
 
                     //animator.SetBool("IsRun",true);
                     //Invoke("StopRun", 1.5f);
                     isNextMove = true;
                     point = hit.point;
+                }
+                if (hit.collider.gameObject.tag == "Egg")
+                {
+                    //Debug.Log(111);
+                    //Debug.Log(hit.point);
+                    isNextMove = true;
+                    point = hit.collider.gameObject.transform.position;
+                    //Debug.Log(point);
                 }
             }
         }
@@ -121,9 +132,12 @@ public class PlayerActorConroller : MonoBehaviour
     {
 
         transform.position = Vector3.MoveTowards(transform.position, pos, Time.deltaTime * 2f);
+        //agent.SetDestination(pos);//移动到目标位置
+
+        Debug.Log(pos);
+        //model.transform.forward = pos - model.transform.position;
+        //model.transform.forward = Quaternion.Euler(pos.x, pos.y, pos.z);
         model.transform.LookAt(pos);
-        
-        //model.transform.rotation = Quaternion.Euler(0, model.transform.forward.y, model.transform.forward.z);
         animator.SetBool("IsRun", true);
         if (transform.position == pos)
         {

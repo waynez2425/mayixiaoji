@@ -6,34 +6,36 @@ using UnityEngine.AI;
 
 public class AnimalController : MonoBehaviour
 {
-    private bool isidel,isrunorwalk,isdance,isrun,isrotation;//æ˜¯å¦åœ¨çŠ¶æ€
-    private float changetime;//æ¯æ¬¡å˜åŒ–çŠ¶æ€çš„é—´éš”æ—¶é—´
-    private float looktime;//è§‚å¯Ÿæ—¶é—´
+    private bool isidel,isrunorwalk,isdance,isrun,isrotation;//ÊÇ·ñÔÚ×´Ì¬
+    private float changetime;//Ã¿´Î±ä»¯×´Ì¬µÄ¼ä¸ôÊ±¼ä
+    private float looktime;//¹Û²ìÊ±¼ä
     //private float eggtime;
-    private float statetype;//å®šä¹‰çŠ¶æ€
-    private float rotationx, rotationz;//æ—‹è½¬å€¼
-    private float eggx, eggz;//é¸¡è›‹çš„xzå€¼
+    private float statetype;//¶¨Òå×´Ì¬
+    private float rotationx, rotationz;//Ğı×ªÖµ
+    private float eggx, eggz;//¼¦µ°µÄxzÖµ
+    private int eggnumber;//¼¦µ°µÄÊıÁ¿Öµ
 
-    //private float isrun;//åˆ¤æ–­æ˜¯å¦è¦è·‘æ­¥
-    private Animator xiaojianimator;//è·å–æ¨¡å‹èº«ä¸Šçš„åŠ¨ç”»ç»„ä»¶
-    private NavMeshAgent xiaojiNavMeshAgent;//è·å–æ¨¡å‹èº«ä¸Šçš„è‡ªåŠ¨å¯»è·¯ç»„ä»¶
-    private Rigidbody rigid;//è·å–æ¨¡å‹èº«ä¸Šçš„åˆšä½“ç»„ä»¶
-    private GameObject target;//ç›®æ ‡ç‚¹
-    private GameObject Player;//ç©å®¶æ§åˆ¶å™¨
-    private GameObject nowPlayer;//ç°åœ¨ç©å®¶çš„ä½ç½®
-    private GameObject FeedButton;//å–‚é£ŸæŒ‰é’®
-    private GameObject FeedButtonText;//å–‚é£ŸæŒ‰é’®çš„æ–‡æœ¬
-    private Transform targetposition;//ç›®æ ‡çš„ä½ç½®
-    public bool IsLayeggs=false;//åˆ¤æ–­æ˜¯å¦ç”Ÿè›‹
-    public GameObject egg;//è·å–è›‹çš„é¢„åˆ¶ä½“
-    public GameObject FeedParticleSystem; //å–‚é£Ÿçš„ç²’å­æ•ˆæœ
-    public int foods=300;   //é£Ÿç‰©æ€»é‡
-    private SignIn signIn; //è·å–ä»£ç 
+    //private float isrun;//ÅĞ¶ÏÊÇ·ñÒªÅÜ²½
+    private Animator xiaojianimator;//»ñÈ¡Ä£ĞÍÉíÉÏµÄ¶¯»­×é¼ş
+    private NavMeshAgent xiaojiNavMeshAgent;//»ñÈ¡Ä£ĞÍÉíÉÏµÄ×Ô¶¯Ñ°Â·×é¼ş
+    private Rigidbody rigid;//»ñÈ¡Ä£ĞÍÉíÉÏµÄ¸ÕÌå×é¼ş
+    private GameObject target;//Ä¿±êµã
+    private GameObject Player;//Íæ¼Ò¿ØÖÆÆ÷
+    private GameObject nowPlayer;//ÏÖÔÚÍæ¼ÒµÄÎ»ÖÃ
+    private GameObject FeedButton;//Î¹Ê³°´Å¥
+    private GameObject FeedButtonText;//Î¹Ê³°´Å¥µÄÎÄ±¾
+    private Text text_feed_food;//Î¹Ê³Á¸Ê³ÊıÁ¿
+    private Transform targetposition;//Ä¿±êµÄÎ»ÖÃ
+    public bool IsLayeggs=false;//ÅĞ¶ÏÊÇ·ñÉúµ°
+    public GameObject egg;//»ñÈ¡µ°µÄÔ¤ÖÆÌå
+    public GameObject FeedParticleSystem; //Î¹Ê³µÄÁ£×ÓĞ§¹û
+    public int foods=300;   //Ê³Îï×ÜÁ¿
+    private SignIn signIn; //»ñÈ¡´úÂë
 
     // Start is called before the first frame update
     private void Awake()
     {
-        //è·å–ç»„ä»¶
+        //»ñÈ¡×é¼ş
         xiaojianimator = this.transform.Find("xiaoji").GetComponent<Animator>();
         xiaojiNavMeshAgent = this.GetComponent<NavMeshAgent>();
         rigid = this.GetComponent<Rigidbody>();
@@ -42,6 +44,8 @@ public class AnimalController : MonoBehaviour
         FeedButton = GameObject.Find("Canvas/Ui Button Controller/Feed Panel/Button");
         FeedButtonText = GameObject.Find("Canvas/Ui Button Controller/Feed Panel/Button/Text (TMP)");
         signIn = GameObject.Find("Canvas/Get Food Panel/Scroll View Panel/Scroll View/Viewport/Content/Sign In Panel").GetComponent<SignIn>();
+        text_feed_food=FeedButtonText.GetComponent<Text>();//»ñÈ¡Á¸Ê³ÎÄ±¾
+        FeedButton.GetComponent<Button>().onClick.AddListener(Feed);//¼àÌıÎ¹Ê³°´Å¥
 
     }
     void Start()
@@ -55,16 +59,15 @@ public class AnimalController : MonoBehaviour
     void FixedUpdate()
     {
         //foods += signIn.GetFoodNumber;
-        FeedButtonText.GetComponent<Text>().text = "ç²®" + foods + "g";//æ˜¾ç¤ºç²®é£Ÿæ•°é‡
-        FeedButton.GetComponent<Button>().onClick.AddListener(Feed);//ç›‘å¬å–‚é£ŸæŒ‰é’®
+        text_feed_food.text = "Á¸" + foods + "g";//ÏÔÊ¾Á¸Ê³ÊıÁ¿
         //Debug.Log(target.transform.position);
-        nowPlayer = Player;//å°†ç©å®¶ä½ç½®æ—¶äº‹è·å–
-        changetime += Time.deltaTime;//çŠ¶æ€æ”¹å˜è‡ªå¢
+        nowPlayer = Player;//½«Íæ¼ÒÎ»ÖÃÊ±ÊÂ»ñÈ¡
+        changetime += Time.deltaTime;//×´Ì¬¸Ä±ä×ÔÔö
         
         //Debug.Log(this.transform.forward);
-        this.GetComponent<Rigidbody>().velocity = Vector3.zero;//é™åˆ¶ç¢°æ’
+        this.GetComponent<Rigidbody>().velocity = Vector3.zero;//ÏŞÖÆÅö×²
 
-        //æ¯éš”10ç§’ååˆ‡æ¢ä¸€æ¬¡çŠ¶æ€
+        //Ã¿¸ô10ÃëºóÇĞ»»Ò»´Î×´Ì¬
         if (changetime > 10f)
         {
             isidel = false;
@@ -76,14 +79,14 @@ public class AnimalController : MonoBehaviour
         }
         if (isidel==false)
         {
-            //é€šè¿‡éšæœºæ•°åˆ‡æ¢çŠ¶æ€
+            //Í¨¹ıËæ»úÊıÇĞ»»×´Ì¬
             statetype = Random.Range(0,3);
             //Debug.Log(statetype);
             
-            //åˆ‡æ¢æˆåƒåŠ¨ç”»
+            //ÇĞ»»³É³Ô¶¯»­
             if (statetype == 0)
             {
-                //æ”¹å˜çŠ¶æ€
+                //¸Ä±ä×´Ì¬
                 isidel = true;
                 isrotation = false;
                 changetime = 0;
@@ -93,7 +96,7 @@ public class AnimalController : MonoBehaviour
             }
 
             
-            //åˆ‡æ¢æˆèµ°è·¯æ¨¡å¼
+            //ÇĞ»»³É×ßÂ·Ä£Ê½
             if (statetype == 1 )
             {
                 isidel = true;
@@ -101,19 +104,19 @@ public class AnimalController : MonoBehaviour
 
                 isrunorwalk = true;
                 isrotation = false;
-                targetposition = target.gameObject.transform;//è·å–ç›®æ ‡ä½ç½®
+                targetposition = target.gameObject.transform;//»ñÈ¡Ä¿±êÎ»ÖÃ
                                                              //Debug.Log(targetposition.position);
-                PlayerPrefs.SetFloat("targetposition", targetposition.position.z);//å­˜å‚¨ç›®æ ‡ä½ç½®çš„zè½´
-                xiaojiNavMeshAgent.SetDestination(target.gameObject.transform.position);//ç§»åŠ¨åˆ°ç›®æ ‡ä½ç½®
+                PlayerPrefs.SetFloat("targetposition", targetposition.position.z);//´æ´¢Ä¿±êÎ»ÖÃµÄzÖá
+                xiaojiNavMeshAgent.SetDestination(target.gameObject.transform.position);//ÒÆ¶¯µ½Ä¿±êÎ»ÖÃ
 
-                //è®¾ç½®åŠ¨ç”»
+                //ÉèÖÃ¶¯»­
                 xiaojianimator.SetBool("IsWalk", true);
                 xiaojianimator.SetBool("IsEat", false);
 
                 //isidel = true;
                 //Debug.Log(22222);
             }
-            //åˆ‡æ¢ä¸ºæ—‹è½¬çŠ¶æ€
+            //ÇĞ»»ÎªĞı×ª×´Ì¬
             if (statetype == 2)
             {
 
@@ -122,7 +125,7 @@ public class AnimalController : MonoBehaviour
                 isrunorwalk = false;
                 changetime = 0;
 
-                //è·å–æ—‹è½¬å€¼
+                //»ñÈ¡Ğı×ªÖµ
                 rotationx = Random.Range(-1f, 1f);
                 rotationz = Random.Range(-1f, 1f);
 
@@ -132,7 +135,7 @@ public class AnimalController : MonoBehaviour
            
         }
         
-        //åˆ¤æ–­æ˜¯å¦å…³é—­èµ°è·¯åŠ¨ç”»
+        //ÅĞ¶ÏÊÇ·ñ¹Ø±Õ×ßÂ·¶¯»­
         if (targetposition!=null)
         {
             
@@ -143,39 +146,52 @@ public class AnimalController : MonoBehaviour
                 
             }
         }
-        //åˆ¤æ–­æ˜¯å¦è¦è¿›è¡Œæ—‹è½¬
+        //ÅĞ¶ÏÊÇ·ñÒª½øĞĞĞı×ª
         if (isrotation)
         {
-            this.transform.forward = Vector3.Slerp(this.transform.forward, new Vector3(rotationx, 0, rotationz), 0.03f); //æ§åˆ¶æ¨¡å‹çš„ç§»åŠ¨æ–¹å‘ï¼›æˆæ¸å˜èˆ¬ç¼“æ…¢å¢é•¿(æ¨¡å‹æ–¹å‘ï¼Œç›®æ ‡å€¼ï¼Œå¢é•¿æ•°)
+            this.transform.forward = Vector3.Slerp(this.transform.forward, new Vector3(rotationx, 0, rotationz), 0.03f); //¿ØÖÆÄ£ĞÍµÄÒÆ¶¯·½Ïò£»³É½¥±ä°ã»ºÂıÔö³¤(Ä£ĞÍ·½Ïò£¬Ä¿±êÖµ£¬Ôö³¤Êı)
         }
 
-        //ç”Ÿè›‹
+        //Éúµ°
         if (xiaojianimator.gameObject.name == "xiaoji")
         {
             if (IsLayeggs)
             {
                 //eggtime += Time.deltaTime;
                 xiaojianimator.SetBool("IsLayeggs", true);
-                Invoke("Layeggs", 2f);
+                Invoke("Layeggs", 2f);//Éúµ°·½·¨
                 IsLayeggs = false;
                 //Debug.Log(eggtime);
                 Invoke("StopLayeggs", 2f);
                 changetime = 0;
                 PlayerPrefs.SetInt("layegg",1);
-
+                if (PlayerPrefs.HasKey("eggnumber"))
+                {
+                    eggnumber= PlayerPrefs.GetInt("eggnumber");
+                    eggnumber++;
+                }
+                else
+                {
+                    eggnumber = 0;
+                    eggnumber++;
+                }
+                
+                PlayerPrefs.SetInt("eggnumber", eggnumber);
+                
             }
             else
             {
                 
             }
         }
+        //Debug.Log("eggnumber" + eggnumber);
     }
-    //è§¦å‘å™¨åˆ¤æ–­æ˜¯å¦æœ‰ç©å®¶åœ¨è§†é‡èŒƒå›´å†…
+    //´¥·¢Æ÷ÅĞ¶ÏÊÇ·ñÓĞÍæ¼ÒÔÚÊÓÒ°·¶Î§ÄÚ
     private void OnTriggerStay(Collider other)
     {
         if (other.tag == "Player")
         {
-            //åˆ¤æ–­ç›¯ç€çš„æ—¶é—´
+            //ÅĞ¶Ï¶¢×ÅµÄÊ±¼ä
             looktime += Time.deltaTime;
             if (looktime <= 20f)
             {
@@ -209,22 +225,22 @@ public class AnimalController : MonoBehaviour
         {
             //Debug.Log(1111);
             Invoke("Hitwall", 2f);
-            //this.transform.forward = Vector3.Slerp(this.transform.forward,new Vector3(this.transform.forward.x,this.transform.forward.y,-1) , 0.03f); //æ§åˆ¶æ¨¡å‹çš„ç§»åŠ¨æ–¹å‘ï¼›æˆæ¸å˜èˆ¬ç¼“æ…¢å¢é•¿(æ¨¡å‹æ–¹å‘ï¼Œç›®æ ‡å€¼ï¼Œå¢é•¿æ•°)
+            //this.transform.forward = Vector3.Slerp(this.transform.forward,new Vector3(this.transform.forward.x,this.transform.forward.y,-1) , 0.03f); //¿ØÖÆÄ£ĞÍµÄÒÆ¶¯·½Ïò£»³É½¥±ä°ã»ºÂıÔö³¤(Ä£ĞÍ·½Ïò£¬Ä¿±êÖµ£¬Ôö³¤Êı)
         }
     }
-    //æ’å¢™è½¬å¼¯
+    //×²Ç½×ªÍä
     private void Hitwall()
     {
         //Debug.Log(11111);
         this.transform.forward = new Vector3(0, 0, -1);
     }
-    //ç”Ÿè›‹
+    //Éúµ°
     private void Layeggs()
     {
         //RaycastHit hit;
         eggx = Random.Range(this.transform.position.x - 0.5f, this.transform.position.x + 0.5f);
         eggz = Random.Range(this.transform.position.z - 0.5f, this.transform.position.z + 0.5f);
-        //åˆ¤æ–­ç”Ÿæˆé¸¡è›‹çš„ä½ç½®ä¸åœ¨æ …æ å†…
+        //ÅĞ¶ÏÉú³É¼¦µ°µÄÎ»ÖÃ²»ÔÚÕ¤À¸ÄÚ
         while (eggx > 5.3 || eggx < -0.6 )
         {
             eggx = Random.Range(this.transform.position.x - 0.5f, this.transform.position.x + 0.5f);
@@ -233,36 +249,19 @@ public class AnimalController : MonoBehaviour
         {
             eggz = Random.Range(this.transform.position.z - 0.5f, this.transform.position.z + 0.5f);
         }
-        //Debug.Log("z=11.8-5  -0.6-5.3");
-        //Debug.Log(eggx+"+"+eggz);
+        
 
-        //if (Physics.SphereCast(new Vector3(eggx, -0.17f, eggz), 0.16f, transform.forward, out hit, 0))
-        //{
-        //    Debug.Log(111111);
-        //    eggx = Random.Range(this.transform.position.x - 0.5f, this.transform.position.x + 0.5f);
-        //    eggz = Random.Range(this.transform.position.z - 0.5f, this.transform.position.z + 0.5f);
-        //    while (eggx > 5.3 || eggx < -0.6)
-        //    {
-        //        eggx = Random.Range(this.transform.position.x - 0.5f, this.transform.position.x + 0.5f);
-        //    }
-        //    while (eggz > 11.8 || eggz < 5)
-        //    {
-        //        eggz = Random.Range(this.transform.position.z - 0.5f, this.transform.position.z + 0.5f);
-        //    }
-       //
-        //}
-        //else
-        //{
-        Instantiate(egg, new Vector3(eggx, -0.051f, eggz), egg.transform.rotation);
-        //}
+        
+        Instantiate(egg, new Vector3(eggx, -0.045f, eggz), egg.transform.rotation);
+       
         
     }
-    //åœæ­¢ç”Ÿè›‹
+    //Í£Ö¹Éúµ°
     private void StopLayeggs()
     {
         xiaojianimator.SetBool("IsLayeggs", false);
     }
-    //å–‚é£Ÿ
+    //Î¹Ê³
     private void Feed()
     {
         if (foods >= 180)
@@ -273,10 +272,8 @@ public class AnimalController : MonoBehaviour
             Invoke("StopEat", 2f);
             foods -= 180;
         }
-        
-
     }
-    //åœæ­¢åƒé£ŸåŠ¨ç”»
+    //Í£Ö¹³ÔÊ³¶¯»­
     private void StopEat()
     {
         xiaojianimator.SetBool("IsEat", false);

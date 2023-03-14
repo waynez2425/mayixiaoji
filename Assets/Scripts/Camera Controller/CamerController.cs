@@ -103,6 +103,7 @@ public class CamerController : MonoBehaviour
     {
         if (PlayerPrefs.HasKey("DontRotationCamera"))
         {
+
         }
         else
         {

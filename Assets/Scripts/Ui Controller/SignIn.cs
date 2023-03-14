@@ -7,7 +7,7 @@ using UnityEngine.UI;
 public class SignIn : MonoBehaviour
 {
     /// <summary>
-    /// è·å–ç­¾åˆ°æ¬¡æ•°
+    /// »ñÈ¡Ç©µ½´ÎÊı
     /// </summary>
     /// <returns>The sign number.</returns>
     public int GetSignNum()
@@ -17,7 +17,7 @@ public class SignIn : MonoBehaviour
         return 1;
     }
     /// <summary>
-    /// è®¾ç½®ç­¾åˆ°æ¬¡æ•°
+    /// ÉèÖÃÇ©µ½´ÎÊı
     /// </summary>
     /// <param name="num">Number.</param>
     public void SetSignNum(int num)
@@ -25,7 +25,7 @@ public class SignIn : MonoBehaviour
         PlayerPrefs.SetInt("signNum", num);
     }
     /// <summary>
-    /// è·å–ä¸Šæ¬¡ç­¾åˆ°æ—¥æœŸ
+    /// »ñÈ¡ÉÏ´ÎÇ©µ½ÈÕÆÚ
     /// </summary>
     /// <returns>The sign data.</returns>
     public string GetSignData()
@@ -35,7 +35,7 @@ public class SignIn : MonoBehaviour
         return DateTime.MinValue.ToString();
     }
     /// <summary>
-    /// è®¾ç½®ä¸Šæ¬¡ç­¾åˆ°æ—¥æœŸ
+    /// ÉèÖÃÉÏ´ÎÇ©µ½ÈÕÆÚ
     /// </summary>
     public void SetSignData(DateTime data)
     {
@@ -43,10 +43,10 @@ public class SignIn : MonoBehaviour
     }
 
 
-    int signNum;//ç­¾åˆ°æ¬¡æ•°
-    DateTime today;//ä»Šæ—¥æ—¥æœŸ
-    DateTime signData;//ä¸Šæ¬¡ç­¾åˆ°æ—¥æœŸ
-    public Button signbutton;//ç­¾åˆ°æŒ‰é’®
+    int signNum;//Ç©µ½´ÎÊı
+    DateTime today;//½ñÈÕÈÕÆÚ
+    DateTime signData;//ÉÏ´ÎÇ©µ½ÈÕÆÚ
+    public Button signbutton;//Ç©µ½°´Å¥
    //private bool isRewardTake = false;
     public Text text_GetFood;
     //public int GetFoodNumber=0;
@@ -56,7 +56,7 @@ public class SignIn : MonoBehaviour
         //Number = 5;
         today = DateTime.Now;
         signNum = GetSignNum();
-        signData = DateTime.Parse(GetSignData());//å°†ä¸Šæ¬¡è·å–çš„æ—¶é—´è½¬ä¸ºDateTimeçš„å½¢å¼
+        signData = DateTime.Parse(GetSignData());//½«ÉÏ´Î»ñÈ¡µÄÊ±¼ä×ªÎªDateTimeµÄĞÎÊ½
         //if (PlayerPrefs.HasKey("foodnumber"))
         //{
         //    Number = PlayerPrefs.GetInt("foodnumber");
@@ -65,10 +65,11 @@ public class SignIn : MonoBehaviour
         //{
         //    PlayerPrefs.SetInt("foodnumber", 5);
         //}
-        Debug.Log(signNum);
-        //text_GetFood.text = signNum * 5 + "g";
+        //Debug.Log(signNum);
+        text_GetFood.text = signNum * 5 + "g";
         if (IsOneDay(signData, today))
         {
+            signbutton.interactable = false;
             //text_GetFood.text = signNum * 5 + "g";
             return;
         }
@@ -88,7 +89,7 @@ public class SignIn : MonoBehaviour
         //Debug.Log(PlayerPrefs.GetInt("foodnumber"));
         //text_GetFood.text = Number.ToString() + "g";
         //  Debug.Log(string.Format("lastSign==={0},today===={1}", signData, today));
-        //æ–°çš„ç­¾åˆ°å‘¨æœŸï¼Œéœ€è¦æ¸…é™¤ç­¾åˆ°å­˜æ¡£(æ¸…æ¥šç­¾åˆ°æ¬¡æ•°å’Œä¸Šä¸€æ¬¡ç­¾åˆ°æ—¥æœŸ)
+        //ĞÂµÄÇ©µ½ÖÜÆÚ£¬ĞèÒªÇå³ıÇ©µ½´æµµ(Çå³şÇ©µ½´ÎÊıºÍÉÏÒ»´ÎÇ©µ½ÈÕÆÚ)
         if (NeedClean())
         {
             PlayerPrefs.DeleteKey("signNum");
@@ -102,21 +103,22 @@ public class SignIn : MonoBehaviour
         //OnBtnGetRewordClick();
         signbutton.interactable = true;
     }
-    //ç­¾åˆ°æŒ‰é’®ç‚¹å‡»
+    //Ç©µ½°´Å¥µã»÷
     public void OnBtnGetRewordClick()
     {
-        signNum++;//ç­¾åˆ°æ¬¡æ•°å¢åŠ 
-        signData = today;//ç­¾åˆ°çš„æ—¶é—´ä¸ºç°åœ¨çš„æ—¶é—´
-        //æ›´æ–°å­˜æ¡£
+        
+        signNum++;//Ç©µ½´ÎÊıÔö¼Ó
+        signData = today;//Ç©µ½µÄÊ±¼äÎªÏÖÔÚµÄÊ±¼ä
+        //¸üĞÂ´æµµ
         SetSignData(signData);
         SetSignNum(signNum);
 
 
         //Debug.Log(PlayerPrefs.GetString("signData"));
-        //ç»™ç”¨æˆ·åŠ ç²®é£Ÿ
+        //¸øÓÃ»§¼ÓÁ¸Ê³
         //GetFoodNumber = FoodNumber(signNum);
 
-        //ç»™ç”¨æˆ·åŠ é‡‘å¸
+        //¸øÓÃ»§¼Ó½ğ±Ò
         //DataManager.instance.SetCoin(DataManager.instance.GetCoin() + signNum * 3);
         //text_Getcoin.transform.GetChild(0).GetComponent<Text>().text = "Get" + " " + signNum * 3 + " coins";
         //text_Getcoin.gameObject.SetActive(true);
@@ -130,20 +132,20 @@ public class SignIn : MonoBehaviour
         //};
         signbutton.interactable = false;
     }
-    //åˆ¤æ–­æ˜¯å¦æ˜¯åŒä¸€å¤©
+    //ÅĞ¶ÏÊÇ·ñÊÇÍ¬Ò»Ìì
     bool IsOneDay(DateTime t1, DateTime t2)
     {
         return (t1.Year == t2.Year &&
          t1.Month == t2.Month &&
           t1.Day == t2.Day);
     }
-    //éœ€è¦æ¸…é™¤æ•°æ®(å½“ç­¾åˆ°å¤©æ•°å¤§äºç­‰äº7å¤©æˆ–è€…ç­¾åˆ°é—´éš”å¤§çº¦ä¸€å¤©ï¼Œåˆ™é‡ç½®æ•°æ®)
+    //ĞèÒªÇå³ıÊı¾İ(µ±Ç©µ½ÌìÊı´óÓÚµÈÓÚ7Ìì»òÕßÇ©µ½¼ä¸ô´óÔ¼Ò»Ìì£¬ÔòÖØÖÃÊı¾İ)
     bool NeedClean()
     {
-        //è½¬æ¢ä¸ºTimeSpanæ–°å®ä¾‹åŒ–çš„æŒ‡æ•°
+        //×ª»»ÎªTimeSpanĞÂÊµÀı»¯µÄÖ¸Êı
         TimeSpan tsNow = new TimeSpan(today.Ticks);
         TimeSpan tsSign = new TimeSpan(signData.Ticks);
-        TimeSpan tsDur = tsNow.Subtract(tsSign).Duration();//ç°åœ¨çš„æ—¶é—´å‡å»è¿‡å»çš„æ—¶é—´
+        TimeSpan tsDur = tsNow.Subtract(tsSign).Duration();//ÏÖÔÚµÄÊ±¼ä¼õÈ¥¹ıÈ¥µÄÊ±¼ä
         // Debug.Log(string.Format("days====={0},hours======{1},minutes====={2}", tsDur.Days, tsDur.Hours, tsDur.Minutes));
         signNum = GetSignNum();
         if (signNum >= 7 || tsDur.Days > 1)

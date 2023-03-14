@@ -7,18 +7,22 @@ public class Geteggs : MonoBehaviour
 {
     private GameObject GetEggsButtonPanel;
     private GameObject GetEggsButton;
+    private int eggnumber;
     // Start is called before the first frame update
     void Start()
     {
         //获取面板和按钮
         GetEggsButtonPanel = GameObject.Find("Canvas/Ui Button Controller/Get Eggs");
         GetEggsButton = GameObject.Find("Canvas/Ui Button Controller/Get Eggs/Button");
+        
+
     }
 
     // Update is called once per frame
     void Update()
     {
         
+        //Debug.Log(eggnumber);
     }
 
     //收获鸡蛋的面板
@@ -41,8 +45,23 @@ public class Geteggs : MonoBehaviour
     //收获鸡蛋方法
     private void Getegg()
     {
-        PlayerPrefs.DeleteKey("layegg");
+        //eggnumber = PlayerPrefs.GetInt("eggnumber");
+        //Debug.Log(eggnumber);
+        //if (eggnumber == 0)
+        //{
+        //    PlayerPrefs.DeleteKey("layegg");
+        //}
+
         GetEggsButtonPanel.SetActive(false);
-        DestroyImmediate(this.gameObject);
+        Destroy(this.gameObject);
+        //
+    }
+    //鸡蛋数量删除
+    private void OnDestroy()
+    {
+        //Debug.Log(111);
+        eggnumber = PlayerPrefs.GetInt("eggnumber");
+        eggnumber--;
+        PlayerPrefs.SetInt("eggnumber", eggnumber);
     }
 }

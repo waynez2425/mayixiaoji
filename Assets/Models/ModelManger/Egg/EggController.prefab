@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 1613343680965702665}
   m_Layer: 7
   m_Name: EggController
-  m_TagString: Untagged
+  m_TagString: Egg
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
