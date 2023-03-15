@@ -35,7 +35,8 @@ public class AnimalController : MonoBehaviour
     private void Awake()
     {
         //获取组件
-        xiaojianimator = this.transform.Find("xiaoji").GetComponent<Animator>();
+        xiaojianimator = this.transform.GetChild(1).gameObject.GetComponent<Animator>();
+        //xiaojianimator = this.transform.Find("xiaoji").GetComponent<Animator>();
         xiaojiNavMeshAgent = this.GetComponent<NavMeshAgent>();
         rigid = this.GetComponent<Rigidbody>();
         target = GameObject.Find("Animal Controller/target");
