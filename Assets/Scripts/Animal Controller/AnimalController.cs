@@ -260,7 +260,7 @@ public class AnimalController : MonoBehaviour
             eggz = Random.Range(this.transform.position.z - 0.5f, this.transform.position.z + 0.5f);
         }
         
-
+   
         
         Instantiate(egg, new Vector3(eggx, -0.045f, eggz), egg.transform.rotation);
        
