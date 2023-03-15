@@ -21,7 +21,6 @@ public class AnimalController : MonoBehaviour
     private Rigidbody rigid;//获取模型身上的刚体组件
     private GameObject target;//目标点
     private GameObject Player;//玩家控制器
-    private GameObject nowPlayer;//现在玩家的位置
     private GameObject FeedButton;//喂食按钮
     private GameObject FeedButtonText;//喂食按钮的文本
     private Text text_feed_food;//喂食粮食数量
@@ -58,20 +57,19 @@ public class AnimalController : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-        //foods += signIn.GetFoodNumber;
-        text_feed_food.text = "粮" + foods + "g";//显示粮食数量
-        //Debug.Log(target.transform.position);
-        nowPlayer = Player;//将玩家位置时事获取
-        changetime += Time.deltaTime;//状态改变自增
         
-        //Debug.Log(this.transform.forward);
-        this.GetComponent<Rigidbody>().velocity = Vector3.zero;//限制碰撞
+        text_feed_food.text = "粮" + foods + "g";//显示粮食数量
+        
+        changetime += Time.deltaTime;//状态改变自增
+
+
+        rigid.velocity = Vector3.zero;//限制碰撞
 
         //每隔10秒后切换一次状态
         if (changetime > 10f)
         {
             isidel = false;
-            //Debug.Log(1111);
+           
         }
         else
         {
@@ -81,7 +79,7 @@ public class AnimalController : MonoBehaviour
         {
             //通过随机数切换状态
             statetype = Random.Range(0,3);
-            //Debug.Log(statetype);
+            
             
             //切换成吃动画
             if (statetype == 0)
@@ -113,8 +111,7 @@ public class AnimalController : MonoBehaviour
                 xiaojianimator.SetBool("IsWalk", true);
                 xiaojianimator.SetBool("IsEat", false);
 
-                //isidel = true;
-                //Debug.Log(22222);
+                
             }
             //切换为旋转状态
             if (statetype == 2)
@@ -141,7 +138,7 @@ public class AnimalController : MonoBehaviour
             
             if (xiaojiNavMeshAgent.remainingDistance< xiaojiNavMeshAgent.stoppingDistance)
             {
-                //Debug.Log(11111111);
+                
                 xiaojianimator.SetBool("IsWalk", false);
                 
             }
@@ -157,11 +154,11 @@ public class AnimalController : MonoBehaviour
         {
             if (IsLayeggs)
             {
-                //eggtime += Time.deltaTime;
+                
                 xiaojianimator.SetBool("IsLayeggs", true);
                 Invoke("Layeggs", 2f);//生蛋方法
                 IsLayeggs = false;
-                //Debug.Log(eggtime);
+                
                 Invoke("StopLayeggs", 2f);
                 changetime = 0;
                 PlayerPrefs.SetInt("layegg",1);
@@ -184,7 +181,7 @@ public class AnimalController : MonoBehaviour
                 
             }
         }
-        //Debug.Log("eggnumber" + eggnumber);
+        
     }
     //触发器判断是否有玩家在视野范围内
     private void OnTriggerStay(Collider other)
@@ -195,13 +192,13 @@ public class AnimalController : MonoBehaviour
             looktime += Time.deltaTime;
             if (looktime <= 20f)
             {
-                this.transform.LookAt(nowPlayer.transform.position);
+                this.transform.LookAt(Player.transform.position);
                 xiaojianimator.SetBool("IsEat", false);
                 changetime = 0;
             }
             else
             {
-                this.transform.LookAt(-nowPlayer.transform.position);
+                this.transform.LookAt(-Player.transform.position);
             }
             isrotation = false;
             isrunorwalk = false;
@@ -220,18 +217,18 @@ public class AnimalController : MonoBehaviour
 
     private void OnCollisionStay(Collision collision)
     {
-        //Debug.Log(1111);
+       
         if (collision.gameObject.layer == LayerMask.NameToLayer("Wall"))
         {
-            //Debug.Log(1111);
+           
             Invoke("Hitwall", 2f);
-            //this.transform.forward = Vector3.Slerp(this.transform.forward,new Vector3(this.transform.forward.x,this.transform.forward.y,-1) , 0.03f); //控制模型的移动方向；成渐变般缓慢增长(模型方向，目标值，增长数)
+            
         }
     }
     //撞墙转弯
     private void Hitwall()
     {
-        //Debug.Log(11111);
+       
         this.transform.forward = new Vector3(0, 0, -1);
     }
     //生蛋
@@ -266,7 +263,8 @@ public class AnimalController : MonoBehaviour
     {
         if (foods >= 180)
         {
-            Instantiate(FeedParticleSystem, new Vector3(this.transform.position.x,0.5f,this.transform.position.z) , FeedParticleSystem.transform.rotation);
+            Instantiate(FeedParticleSystem, new Vector3(this.transform.position.x,0.5f,this.transform.position.z) ,
+                FeedParticleSystem.transform.rotation);
             
             xiaojianimator.SetBool("IsEat", true);
             Invoke("StopEat", 2f);

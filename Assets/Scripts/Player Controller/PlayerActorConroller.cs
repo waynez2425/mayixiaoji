@@ -24,7 +24,7 @@ public class PlayerActorConroller : MonoBehaviour
 
     public Vector3 point;//鼠标点击的位置
     private bool isNextMove = false;//是否移动到下一个点位的开关
-    private bool isGetEggPanel;
+
 
 
 
@@ -49,12 +49,13 @@ public class PlayerActorConroller : MonoBehaviour
             var enguler = Quaternion.LookRotation(pi.Dvec).eulerAngles; //把遥感的角度暂存
             enguler.y += CameraHandle.transform.eulerAngles.y;          //摄像机的角度y值
             model.transform.eulerAngles = enguler;                      //遥感的角度给模型角度
-            //model.transform.forward = Vector3.Slerp(model.transform.forward, pi.Dvec, 0.3f);//控制模型的移动方向；成渐变般缓慢增长(模型方向，目标值，增长数)
+           
         }
         else
         {
             animator.SetFloat("Forward", 0);
         }
+        //设置跑步速度
         if (animator.GetFloat("Forward") >= 1.5f)
         {
             walkSpeed = 0.05f;
@@ -63,14 +64,9 @@ public class PlayerActorConroller : MonoBehaviour
         {
             walkSpeed = 0.02f;
         }
-        movingVec = pi.ForR * model.transform.forward * walkSpeed * /*((pi.run) ? runMultiplier :*/ 1.0f;//设置速度为速度方向向量*模型前方*速度*判断是否开始跑步
-        //Debug.Log("人物方向"+model.transform.forward);
-        //Debug.Log("摄像头"+text11.transform.forward);
-        //if (animator.GetFloat("Forward") != 0)
-        //{
-        //    animator.SetBool("IsDance", false);
-        //}
-        if (Input.GetMouseButtonDown(0) && /*PlayerPrefs.HasKey("layegg")*/PlayerPrefs.GetInt("eggnumber")>0)
+        movingVec = pi.ForR * model.transform.forward * walkSpeed *  1.0f;//设置速度为速度方向向量*模型前方*速度*判断是否开始跑步
+        
+        if (Input.GetMouseButtonDown(0) && PlayerPrefs.GetInt("eggnumber")>0)
         {
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
@@ -78,42 +74,25 @@ public class PlayerActorConroller : MonoBehaviour
             {
                 if (hit.collider.gameObject.tag == "Plane")
                 {
-                    //Debug.Log(22222);
-                    //Debug.DrawLine(ray.origin, hit.point, Color.black,10f);
-                    //Debug.Log(hit.point);
-                    //agent.SetDestination(hit.point);
-
-                    //animator.SetBool("IsRun",true);
-                    //Invoke("StopRun", 1.5f);
+                    
                     isNextMove = true;
                     point = hit.point;
                 }
                 if (hit.collider.gameObject.tag == "Egg")
                 {
-                    //Debug.Log(111);
-                    //Debug.Log(hit.point);
+                    
                     isNextMove = true;
                     point = hit.collider.gameObject.transform.position;
-                    //Debug.Log(point);
+                   
                 }
             }
         }
-        //if (GetEggPanel.activeSelf)
-        //{
-        //    isGetEggPanel = true;
-        //}
-        //else
-        //{
-        //    isGetEggPanel = false;
-        //}
-        if (isNextMove /*&& isGetEggPanel == false*/)
+
+        if (isNextMove )
         {
             Move(point);
         }
-        //if (isGetEggPanel)
-        //{
-        //    animator.SetBool("IsRun", false);
-        //}
+
     }
     void FixedUpdate()//每秒模拟50次   Time.fixedDeltaTime
     {
@@ -121,22 +100,14 @@ public class PlayerActorConroller : MonoBehaviour
         agent.Move(new Vector3(movingVec.x, rigid.velocity.y, movingVec.z));
         this.GetComponent<Rigidbody>().velocity = Vector3.zero;//限制碰撞
 
-        //鼠标点击移动
-        
-       
-        //Debug.Log(movingVec);
-        //rigid.position += movingVec * Time.fixedDeltaTime;  刚体的位置+=移动速度*时间  下面是另一种移动方法
-        //rigid.velocity = new Vector3(movingVec.x, rigid.velocity.y, movingVec.z);//刚体的速度=新定义的速度的x，z值，以及刚体本身的y值，因为定义的速度值的y值是没有定义的
+
     }
+    //鼠标点击移动
     public void Move(Vector3 pos)
     {
 
         transform.position = Vector3.MoveTowards(transform.position, pos, Time.deltaTime * 2f);
-        //agent.SetDestination(pos);//移动到目标位置
 
-        Debug.Log(pos);
-        //model.transform.forward = pos - model.transform.position;
-        //model.transform.forward = Quaternion.Euler(pos.x, pos.y, pos.z);
         model.transform.LookAt(pos);
         animator.SetBool("IsRun", true);
         if (transform.position == pos)

@@ -31,13 +31,12 @@ public class CamerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //Debug.Log(joystick.Horizontal);
         //**************************************************************鼠标视角移动***********************************************************
 
 #if UNITY_EDITOR
         if (Input.GetMouseButton(0) && Input.GetAxis("Mouse X") != 0)
         {
-            cameraHandle.transform.RotateAround(playerHandle.transform.position, new Vector3(0,1,0)/*transform.up*/,
+            cameraHandle.transform.RotateAround(playerHandle.transform.position, new Vector3(0,1,0),
                  -Input.GetAxis("Mouse X") * 100f * Time.deltaTime);
             //Debug.Log(1111111111);
         }
@@ -74,42 +73,19 @@ public class CamerController : MonoBehaviour
         }
 #endif
 
-        //没有触摸
-        //if (Input.touchCount <= 0)
-        //{
-        //    return;
-        //}
-        //if (joystick.Horizontal == 0 && joystick.Vertical == 0)
-        //{
-        //    RotateCamera(0);
-        //}
-        //else
-        //{
-        //    RotateCamera(1);
-        //}
-        //Jup = backValue;
-        ////控制鼠标纵向移动
-        //Jright = backValue;
-        ////控制鼠标横向移动
-        //playerHandle.transform.Rotate(Vector3.up, pi.Jright * horizontalSpeed * Time.deltaTime);
-        //控制playerHandle的旋转值来控制摄像机的水平移动
-
-        //控制摄像机纵向移动
-        //tempEulerX -= pi.Jup * verticalSpeed * Time.deltaTime;//获取鼠标纵向移动值
-        //tempEulerX = Mathf.Clamp(tempEulerX, -40, 30);//限制移动角度
-        //cameraHandle.transform.localEulerAngles = new Vector3(tempEulerX, 0, 0);//将值付给摄像机的父级
+        
     }
     public void RotateCamera(int i)
     {
         if (PlayerPrefs.HasKey("DontRotationCamera"))
         {
-
+            return;
         }
         else
         {
             if (Input.GetTouch(i).phase == TouchPhase.Began /*&&pi.Dvec!=Vector3.zero*/)
             {
-                //Debug.Log("======开始触摸=====");
+                
 
                 startFingerPos = Input.GetTouch(i).position;//获取第一根手指的位置
             }
@@ -119,13 +95,11 @@ public class CamerController : MonoBehaviour
             if ((Input.GetTouch(i).phase == TouchPhase.Stationary) || (Input.GetTouch(i).phase == TouchPhase.Ended))
             {
                 startFingerPos = nowFingerPos;
-                //Debug.Log("======释放触摸=====");
+                
                 return;
             }
 
-            //			if (Input.GetTouch(0).phase == TouchPhase.Ended) {
-            //				
-            //			}
+            
             if (startFingerPos == nowFingerPos)
             {
                 return;
@@ -169,12 +143,12 @@ public class CamerController : MonoBehaviour
             if (backValue == -1)
             {
                 //Debug.Log(1111111111);
-                cameraHandle.transform.RotateAround(/*cameraHandle.transform.parent.GetChild(1)*/playerHandle.transform.position, new Vector3(0, 1, 0)/*transform.up*/,
+                cameraHandle.transform.RotateAround(playerHandle.transform.position, new Vector3(0, 1, 0),
                     -100 * Time.deltaTime);
             }
             else if (backValue == 1)
             {
-                cameraHandle.transform.RotateAround(/*cameraHandle.transform.parent.GetChild(1)*/playerHandle.transform.position, new Vector3(0, 1, 0)/*transform.up*/,
+                cameraHandle.transform.RotateAround(playerHandle.transform.position, new Vector3(0, 1, 0),
                     100 * Time.deltaTime);
             }
             else if (backValue == 2)

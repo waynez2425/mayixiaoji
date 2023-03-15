@@ -30,9 +30,9 @@ public class PlayerInput : MonoBehaviour
         
         //****************************************************************角色移动***********************************************************
         UorD = joystick.Vertical;
-        //用三目运算判断是按下前进还是后退，当按下W时，UorD的值为1，否则为0
+        //获取遥感的y轴值
         RorL = joystick.Horizontal;
-        //用三目运算判断是按下向右还是向左，当按下D时，RorL的值为1，否则为0
+        //获取遥感的z轴值
         Dup = Mathf.SmoothDamp(Dup, UorD, ref VeloctiyUp, 0.1f);
         //用SmoothDamp函数是的数值变化不会从0直接到1显得动作切换过于突然
         //SmoothDamp(起始值，目标值，变化速率（默认是0就可以），变化时间)
@@ -42,20 +42,14 @@ public class PlayerInput : MonoBehaviour
         
         float Dright2 = tempDAxis.x;
         float Dup2 = tempDAxis.y;
-        //float Dright2 = joystick.Horizontal;
-        //float Dup2 = joystick.Vertical;
 
         ForR = Mathf.Sqrt((Dup2 * Dup2) + (Dright2 * Dright2));
         //利用数学思想，在坐标轴上，y轴坐标平方加上x轴坐标的平方再开根号等于斜向方向，所以ForR就是存储斜向方向的值
-        //****************************************************************角色跑步***********************************************************
-        //run = Input.GetKey(keyA);
         ////****************************************************************角色翻滚***********************************************************
-        //roll = Input.GetKeyDown(keyB);
 
         //****************************************************************角色旋转***********************************************************
         Dvec = Dright2 * transform.right + Dup2 * transform.forward;//方向存量乘余当前模型的方向向量   向右的向量加上向上的向量等于斜向右上的向量
-        //Debug.Log(Dvec);
-        //Debug.Log(joystick.Vertical);
+
        
     }
     //角色移动中的方法
