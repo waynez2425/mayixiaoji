@@ -28,12 +28,18 @@ public class AnimalController : MonoBehaviour
     public bool IsLayeggs=false;//判断是否生蛋
     public GameObject egg;//获取蛋的预制体
     public GameObject FeedParticleSystem; //喂食的粒子效果
-    public int foods=300;   //食物总量
+    public int foods;   //食物总量
     private SignIn signIn; //获取代码
+    private int SignInfoods;
+    private bool getfood;
 
     // Start is called before the first frame update
     private void Awake()
     {
+        //PlayerPrefs.DeleteKey("signNum");
+        //PlayerPrefs.DeleteKey("signData");
+        //PlayerPrefs.DeleteKey("foodnumber");
+        //PlayerPrefs.DeleteKey("foodnum");
         //获取组件
         xiaojianimator = this.transform.GetChild(1).gameObject.GetComponent<Animator>();
         //xiaojianimator = this.transform.Find("xiaoji").GetComponent<Animator>();
@@ -47,20 +53,26 @@ public class AnimalController : MonoBehaviour
         text_feed_food=FeedButtonText.GetComponent<Text>();//获取粮食文本
         FeedButton.GetComponent<Button>().onClick.AddListener(Feed);//监听喂食按钮
 
+        
     }
     void Start()
     {
         PlayerPrefs.DeleteKey("targetposition");
         isidel = true;
-
+        getfood = true;
+        foods = GetFoodNum();
+        text_feed_food.text = "粮" + foods + "g";//显示粮食数量'
+        PlayerPrefs.SetInt("foodnum", foods);
     }
 
     // Update is called once per frame
     void FixedUpdate()
     {
         
-        text_feed_food.text = "粮" + foods + "g";//显示粮食数量
+        foods = GetFoodNum();//实时更新粮食数量
         
+
+
         changetime += Time.deltaTime;//状态改变自增
 
 
@@ -269,12 +281,24 @@ public class AnimalController : MonoBehaviour
             
             xiaojianimator.SetBool("IsEat", true);
             Invoke("StopEat", 2f);
+            foods=GetFoodNum();//获取粮食数量
             foods -= 180;
+            PlayerPrefs.SetInt("foodnum", foods);//将喂食后的粮食值储存起来
+            text_feed_food.text = "粮" + foods + "g";//显示粮食数量
         }
     }
     //停止吃食动画
     private void StopEat()
     {
         xiaojianimator.SetBool("IsEat", false);
+    }
+
+
+    //获取还剩余的饲料量
+    public int GetFoodNum()
+    {
+        if (PlayerPrefs.HasKey("foodnum"))
+            return PlayerPrefs.GetInt("foodnum");
+        return 300;
     }
 }

@@ -50,7 +50,13 @@ public class SignIn : MonoBehaviour
     public Button signbutton;//签到按钮
    
     public Text text_GetFood;//每日签到可得饲料的显示文本
-    
+    private Text text_feed_food;//喂食粮食数量
+    private int foods;
+
+    private void Awake()
+    {
+        text_feed_food = GameObject.Find("Canvas/Ui Button Controller/Feed Panel/Button/Text (TMP)").GetComponent<Text>();
+    }
     private void Start()
     {
         
@@ -60,8 +66,7 @@ public class SignIn : MonoBehaviour
        
 
 
-        //初始饲料赋值
-        text_GetFood.text = signNum * 5 + "g";
+        
         if (IsOneDay(signData, today))
         {
             //当天数没有变化，是当天的时候显示饲料量
@@ -99,8 +104,12 @@ public class SignIn : MonoBehaviour
         SetSignData(signData);
         SetSignNum(signNum);
 
-
-       
+        
+        //喂食按钮下的text文本值更改
+        foods = PlayerPrefs.GetInt("foodnum");
+        foods += (GetSignNum() - 1) * 5;
+        PlayerPrefs.SetInt("foodnum",foods);
+        text_feed_food.text = "粮" + foods + "g";
         //按钮触发完后关闭按钮
         signbutton.interactable = false;
     }
