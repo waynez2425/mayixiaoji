@@ -1,3 +1,4 @@
+
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -47,47 +48,30 @@ public class SignIn : MonoBehaviour
     DateTime today;//今日日期
     DateTime signData;//上次签到日期
     public Button signbutton;//签到按钮
-   //private bool isRewardTake = false;
-    public Text text_GetFood;
-    //public int GetFoodNumber=0;
-    //public int Number = 5;
+   
+    public Text text_GetFood;//每日签到可得饲料的显示文本
+    
     private void Start()
     {
-        //Number = 5;
+        
         today = DateTime.Now;
         signNum = GetSignNum();
         signData = DateTime.Parse(GetSignData());//将上次获取的时间转为DateTime的形式
-        //if (PlayerPrefs.HasKey("foodnumber"))
-        //{
-        //    Number = PlayerPrefs.GetInt("foodnumber");
-        //}
-        //else
-        //{
-        //    PlayerPrefs.SetInt("foodnumber", 5);
-        //}
-        //Debug.Log(signNum);
+       
+
+
+        //初始饲料赋值
         text_GetFood.text = signNum * 5 + "g";
         if (IsOneDay(signData, today))
         {
+            //当天数没有变化，是当天的时候显示饲料量
+            text_GetFood.text = (signNum-1) * 5 + "g";
             signbutton.interactable = false;
             //text_GetFood.text = signNum * 5 + "g";
             return;
         }
 
-        ////test
-        //if(!IsOneDay(signData, today)&& signNum > 0&&NeedClean()==false)
-        //{
-        //    Number += 5;
-        //    PlayerPrefs.SetInt("foodnumber", Number);
-        //    //Debug.Log(11111);
-        //}
-        //else
-        //{
-        //    Number = PlayerPrefs.GetInt("foodnumber");
-        //}
-        //Number = PlayerPrefs.GetInt("foodnumber");
-        //Debug.Log(PlayerPrefs.GetInt("foodnumber"));
-        //text_GetFood.text = Number.ToString() + "g";
+        
         //  Debug.Log(string.Format("lastSign==={0},today===={1}", signData, today));
         //新的签到周期，需要清除签到存档(清楚签到次数和上一次签到日期)
         if (NeedClean())
@@ -97,10 +81,12 @@ public class SignIn : MonoBehaviour
             //PlayerPrefs.DeleteKey("foodnumber");
         }
         signNum = GetSignNum();
-        
+        //在天数变化后重新生成饲料量
+        text_GetFood.text = signNum * 5 + "g";
 
 
         //OnBtnGetRewordClick();
+        //如果不是同一天激活按钮
         signbutton.interactable = true;
     }
     //签到按钮点击
@@ -114,22 +100,8 @@ public class SignIn : MonoBehaviour
         SetSignNum(signNum);
 
 
-        //Debug.Log(PlayerPrefs.GetString("signData"));
-        //给用户加粮食
-        //GetFoodNumber = FoodNumber(signNum);
-
-        //给用户加金币
-        //DataManager.instance.SetCoin(DataManager.instance.GetCoin() + signNum * 3);
-        //text_Getcoin.transform.GetChild(0).GetComponent<Text>().text = "Get" + " " + signNum * 3 + " coins";
-        //text_Getcoin.gameObject.SetActive(true);
-        //text_Getcoin.transform.GetChild(0).transform.DOScale(1.2f, 2.5f).onComplete = delegate
-        //{
-        //    text_Getcoin.transform.GetChild(0).transform.localScale = new Vector3(1, 1, 1);
-        //    text_Getcoin.gameObject.SetActive(false);
-        //PlayerPrefs.DeleteKey("foodnumber");
-        //PlayerPrefs.DeleteKey("signNum");
-        //PlayerPrefs.DeleteKey("signData");
-        //};
+       
+        //按钮触发完后关闭按钮
         signbutton.interactable = false;
     }
     //判断是否是同一天
@@ -148,7 +120,7 @@ public class SignIn : MonoBehaviour
         TimeSpan tsDur = tsNow.Subtract(tsSign).Duration();//现在的时间减去过去的时间
         // Debug.Log(string.Format("days====={0},hours======{1},minutes====={2}", tsDur.Days, tsDur.Hours, tsDur.Minutes));
         signNum = GetSignNum();
-        if (signNum >= 7 || tsDur.Days > 1)
+        if (signNum > 7 || tsDur.Days > 1)
         {
             return true;
         }

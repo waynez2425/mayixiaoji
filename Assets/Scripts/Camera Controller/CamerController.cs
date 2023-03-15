@@ -24,7 +24,7 @@ public class CamerController : MonoBehaviour
     {
         cameraHandle = transform.parent.gameObject;          //获取父级物体
         //playerHandle = cameraHandle.transform.parent.gameObject;
-
+        
         //Cursor.lockState = CursorLockMode.Locked;           //将鼠标锁死屏幕中央，并且不显示
     }
 
